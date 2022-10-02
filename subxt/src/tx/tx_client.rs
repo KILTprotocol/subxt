@@ -55,7 +55,7 @@ impl<T: Config, C: OfflineClientT<T>> TxClient<T, C> {
     /// the pallet or call in question do not exist at all).
     pub fn validate<Call>(&self, call: &Call) -> Result<(), Error>
     where
-        Call: TxPayload,
+        Call: TxPayload + ?Sized,
     {
         if let Some(details) = call.validation_details() {
             let metadata = self.client.metadata();
@@ -75,7 +75,7 @@ impl<T: Config, C: OfflineClientT<T>> TxClient<T, C> {
     /// Return the SCALE encoded bytes representing the call data of the transaction.
     pub fn call_data<Call>(&self, call: &Call) -> Result<Vec<u8>, Error>
     where
-        Call: TxPayload,
+        Call: TxPayload + ?Sized,
     {
         let metadata = self.client.metadata();
         let mut bytes = Vec::new();
@@ -89,7 +89,7 @@ impl<T: Config, C: OfflineClientT<T>> TxClient<T, C> {
         call: &Call,
     ) -> Result<SubmittableExtrinsic<T, C>, Error>
     where
-        Call: TxPayload,
+        Call: TxPayload + ?Sized,
     {
         // 1. Validate this call against the current node metadata if the call comes
         // with a hash allowing us to do so.
@@ -129,7 +129,7 @@ impl<T: Config, C: OfflineClientT<T>> TxClient<T, C> {
         other_params: <T::ExtrinsicParams as ExtrinsicParams<T::Index, T::Hash>>::OtherParams,
     ) -> Result<SubmittableExtrinsic<T, C>, Error>
     where
-        Call: TxPayload,
+        Call: TxPayload + ?Sized,
     {
         // 1. Validate this call against the current node metadata if the call comes
         // with a hash allowing us to do so.
@@ -221,7 +221,7 @@ where
         other_params: <T::ExtrinsicParams as ExtrinsicParams<T::Index, T::Hash>>::OtherParams,
     ) -> Result<SubmittableExtrinsic<T, C>, Error>
     where
-        Call: TxPayload,
+        Call: TxPayload + ?Sized,
     {
         // Get nonce from the node.
         let account_nonce = if let Some(nonce) = signer.nonce() {
@@ -247,7 +247,7 @@ where
         signer: &(dyn Signer<T> + Send + Sync),
     ) -> Result<TxProgress<T, C>, Error>
     where
-        Call: TxPayload,
+        Call: TxPayload + ?Sized,
         <T::ExtrinsicParams as ExtrinsicParams<T::Index, T::Hash>>::OtherParams: Default,
     {
         self.sign_and_submit_then_watch(call, signer, Default::default())
@@ -265,7 +265,7 @@ where
         other_params: <T::ExtrinsicParams as ExtrinsicParams<T::Index, T::Hash>>::OtherParams,
     ) -> Result<TxProgress<T, C>, Error>
     where
-        Call: TxPayload,
+        Call: TxPayload + ?Sized,
     {
         self.create_signed(call, signer, other_params)
             .await?
@@ -289,7 +289,7 @@ where
         signer: &(dyn Signer<T> + Send + Sync),
     ) -> Result<T::Hash, Error>
     where
-        Call: TxPayload,
+        Call: TxPayload + ?Sized,
         <T::ExtrinsicParams as ExtrinsicParams<T::Index, T::Hash>>::OtherParams: Default,
     {
         self.sign_and_submit(call, signer, Default::default()).await
@@ -310,7 +310,7 @@ where
         other_params: <T::ExtrinsicParams as ExtrinsicParams<T::Index, T::Hash>>::OtherParams,
     ) -> Result<T::Hash, Error>
     where
-        Call: TxPayload,
+        Call: TxPayload + ?Sized,
     {
         self.create_signed(call, signer, other_params)
             .await?
